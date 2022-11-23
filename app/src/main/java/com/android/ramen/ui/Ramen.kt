@@ -14,10 +14,10 @@ data class Ramen(
     override val cookingTime: Long = System.currentTimeMillis(),
     val water: Int,                                              // 단위 : ml, 밀리리터
     val powder: Int,                                             // 단위 : %, 퍼센트
-    val etc: String//ArrayList<String>,                                  // 기타 재료
+    val etc: String     //ArrayList<String>,                     // 기타 재료
 ) : Order, Parcelable {
     companion object {
-        val mockRamen = Ramen(
+        val mockRamen = Ramen(      // 임시 데이터
             orderNumber = 0,
             cookingTime = System.currentTimeMillis(),
             water = 0,

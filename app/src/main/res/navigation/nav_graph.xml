@@ -7,14 +7,16 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.android.ramen.FirstFragment"
+        android:name="com.android.ramen.HomeFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_home">
 
         <action
             android:id="@+id/action_FirstFragment_to_OrderFragment"
             app:destination="@id/OrderFragment" />
+
     </fragment>
+
     <fragment
         android:id="@+id/OrderFragment"
         android:name="com.android.ramen.ui.OrderFragment"

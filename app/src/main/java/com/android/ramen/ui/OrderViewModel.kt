@@ -9,10 +9,13 @@ import com.android.ramen.ui.Ramen
 class OrderViewModel : ViewModel() {
     private val _cookingList = MutableLiveData<List<Ramen>>()
     val cookingList: LiveData<List<Ramen>> get() = _cookingList
-    private val list = arrayListOf<Ramen>()
 
     companion object {
         var orderNumber = 0
+    }
+
+    init {
+        Log.d("+++OrderViewModel", "생성자")
     }
 
 
@@ -28,16 +31,9 @@ class OrderViewModel : ViewModel() {
     // 주문 버튼 클릭시 동작
     fun setOrder(ramen: Ramen) {
         orderNumber++
-        cookingList.value?.forEachIndexed { i, v ->
-            list.add(v)
-        }
-        val ramen1 = ramen.copy(orderNumber = orderNumber)
-        list.add(ramen1)
+        val list: MutableList<Ramen> = arrayListOf<Ramen>()
+        list.addAll(cookingList.value ?: emptyList())
+        list.addAll(listOf(ramen.copy(orderNumber = orderNumber)))
         _cookingList.value = list
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d("++onCleared", "불림")
     }
 }

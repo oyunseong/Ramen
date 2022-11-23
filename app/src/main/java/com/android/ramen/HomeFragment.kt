@@ -1,38 +1,44 @@
 package com.android.ramen
 
 import android.app.AlertDialog
-import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.android.ramen.databinding.FragmentFirstBinding
+import com.android.ramen.databinding.FragmentHomeBinding
+import com.android.ramen.ui.OrderFragment
+import com.android.ramen.ui.OrderViewModel
 import com.android.ramen.ui.Ramen
-import com.android.ramen.utils.hideKeyboard
 
 
-class FirstFragment : Fragment() {
-    private var _binding: FragmentFirstBinding? = null
+class HomeFragment : Fragment() {
+    private var _binding: FragmentHomeBinding? = null
     private lateinit var water: String
     private lateinit var powder: String
     private lateinit var etc: String
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("++FirstFragment", "++onCreate")
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -40,11 +46,13 @@ class FirstFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_OrderFragment)
+//            parentFragmentManager.beginTransaction()
+//                .replace(R.id.nav_host_fragment_content_main, orderFragment)
+            findNavController().navigate(R.id.OrderFragment)
         }
 
         binding.orderButton.setOnClickListener {
-            it.hideKeyboard()
+//            it.hideKeyboard()
             if (orderOptionCheck()) {
                 showDialog()
             } else {
@@ -83,6 +91,7 @@ class FirstFragment : Fragment() {
         etc = binding.etc.text.toString()
         builder.setTitle("주문서 확인").setMessage("물의 양 : ${water}ml\n파우더 양 : ${powder}%\n추가 재료 : $etc")
 
+
         builder.setPositiveButton("주문하기", object : DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, p1: Int) {
                 try {
@@ -95,14 +104,14 @@ class FirstFragment : Fragment() {
                     val bundle = bundleOf(
                         "ramen" to ramen
                     )
-                    findNavController().navigate(
-                        R.id.action_FirstFragment_to_OrderFragment, bundle
-                    )
+                    MainActivity().changeFragment(FragmentType.HOME)
+//                    findNavController().navigate(
+//                        R.id.action_FirstFragment_to_OrderFragment, bundle
+//                    )
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(requireContext(), "알 수 없는 오류 발생.", Toast.LENGTH_SHORT).show()
                 }
-
             }
         })
         builder.setNegativeButton("취소", object : DialogInterface.OnClickListener {
@@ -122,6 +131,12 @@ class FirstFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("++FirstFragment", "++onDestroyView")
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("++FirstFragment", "++onDestroy")
     }
 }

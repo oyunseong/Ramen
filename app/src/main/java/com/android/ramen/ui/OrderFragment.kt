@@ -1,22 +1,23 @@
 package com.android.ramen.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.ramen.R
-import com.android.ramen.OrderViewModel
-import com.android.ramen.databinding.FragmentSecondBinding
+import com.android.ramen.databinding.FragmentOrderBinding
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 class OrderFragment : Fragment() {
-    private var _binding: FragmentSecondBinding? = null
+    private lateinit var ramen: Ramen
+    private var _binding: FragmentOrderBinding? = null
     private val orderViewModel by viewModels<OrderViewModel>()
     private val orderAdapter = OrderAdapter()
 
@@ -26,11 +27,9 @@ class OrderFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentOrderBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -38,9 +37,19 @@ class OrderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setOrderRecyclerView()
+        ramen = arguments?.getParcelable<Ramen>("ramen") ?: Ramen.mockRamen
+        Log.d("++onViewCreated", orderViewModel.cookingList.value.toString())
+        if (ramen != Ramen.mockRamen) {
+            orderViewModel.setOrder(ramen)
+        }
 
         orderViewModel.cookingList.observe(viewLifecycleOwner) {
-            orderViewModel.setOrder(it)
+            try {
+                orderAdapter.setOrderList(it)
+                Log.d("++onViewCreate", it.toString())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         binding.buttonSecond.setOnClickListener {
@@ -51,7 +60,7 @@ class OrderFragment : Fragment() {
     private fun setOrderRecyclerView() {
         binding.orderRecyclerView.apply {
             layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = orderAdapter
         }
     }

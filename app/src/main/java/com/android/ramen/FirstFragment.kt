@@ -1,41 +1,123 @@
 package com.android.ramen
 
+import android.app.AlertDialog
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.ramen.databinding.FragmentFirstBinding
+import com.android.ramen.ui.Ramen
+import com.android.ramen.utils.hideKeyboard
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
+
 class FirstFragment : Fragment() {
-
-
     private var _binding: FragmentFirstBinding? = null
+    private lateinit var water: String
+    private lateinit var powder: String
+    private lateinit var etc: String
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            findNavController().navigate(R.id.action_FirstFragment_to_OrderFragment)
         }
+
+        binding.orderButton.setOnClickListener {
+            it.hideKeyboard()
+            if (orderOptionCheck()) {
+                showDialog()
+            } else {
+                return@setOnClickListener
+            }
+        }
+    }
+
+    private fun orderOptionCheck(): Boolean {
+        try {
+            water = binding.water.text.toString()
+            powder = binding.powder.text.toString()
+            etc = binding.etc.text.toString()
+            val w = water.toInt()
+            val p = powder.toInt()
+
+            if (w <= 0 || p <= 0 || p > 100) {
+                Toast.makeText(requireContext(), "옵션을 다시 확인해주세요.", Toast.LENGTH_SHORT).show()
+                return false
+            } else if (w in 1..249) {
+                Toast.makeText(requireContext(), "라면이 짤 수도 있습니다.", Toast.LENGTH_SHORT).show()
+            }
+            return true
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "옵션을 다시 확인해주세요.", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+            return false
+        }
+    }
+
+
+    private fun showDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        water = binding.water.text.toString()
+        powder = binding.powder.text.toString()
+        etc = binding.etc.text.toString()
+        builder.setTitle("주문서 확인").setMessage("물의 양 : ${water}ml\n파우더 양 : ${powder}%\n추가 재료 : $etc")
+
+        builder.setPositiveButton("주문하기", object : DialogInterface.OnClickListener {
+            override fun onClick(p0: DialogInterface?, p1: Int) {
+                try {
+                    val ramen = Ramen(
+                        orderNumber = 0,
+                        water = water.toInt(),
+                        powder = powder.toInt(),
+                        etc = etc,
+                    )
+                    val bundle = bundleOf(
+                        "ramen" to ramen
+                    )
+                    findNavController().navigate(
+                        R.id.action_FirstFragment_to_OrderFragment, bundle
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(requireContext(), "알 수 없는 오류 발생.", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        })
+        builder.setNegativeButton("취소", object : DialogInterface.OnClickListener {
+            override fun onClick(p0: DialogInterface?, p1: Int) {
+
+            }
+        })
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
+    }
+
+
+    // 라면 객체를 생성해서 list에 append하기
+    private fun order() {
+        val ramen: Ramen
     }
 
     override fun onDestroyView() {

@@ -59,6 +59,9 @@ class HomeFragment : Fragment() {
                 return@setOnClickListener
             }
         }
+        binding.button3.setOnClickListener {
+            findNavController().navigate(R.id.ImageFragment)
+        }
     }
 
     private fun orderOptionCheck(): Boolean {
@@ -104,7 +107,7 @@ class HomeFragment : Fragment() {
                     val bundle = bundleOf(
                         "ramen" to ramen
                     )
-                    MainActivity().changeFragment(FragmentType.HOME)
+//                    MainActivity().changeFragment(FragmentType.HOME)
 //                    findNavController().navigate(
 //                        R.id.action_FirstFragment_to_OrderFragment, bundle
 //                    )

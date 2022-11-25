@@ -7,13 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.ramen.FragmentType
-import com.android.ramen.MainActivity
-import com.android.ramen.R
 import com.android.ramen.databinding.FragmentOrderBinding
 
 /**
@@ -56,14 +50,14 @@ class OrderFragment : Fragment() {
 
         orderViewModel.cookingList.observe(viewLifecycleOwner) {
             try {
-                orderAdapter.setOrderList(it)
+//                orderAdapter.setOrderList(it)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
 
         binding.buttonSecond.setOnClickListener {
-            MainActivity().onChangeFragment(it, FragmentType.HOME)
+//            MainActivity().onChangeFragment(it, FragmentType.HOME)
 //            findNavController().navigate(R.id.FirstFragment)
         }
     }

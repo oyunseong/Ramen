@@ -1,17 +1,12 @@
 package com.android.ramen
 
 import android.os.Bundle
-import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.android.ramen.databinding.ActivityMainBinding
 import com.android.ramen.ui.OrderFragment
-import com.android.ramen.ui.OrderViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,43 +32,4 @@ class MainActivity : AppCompatActivity() {
     private fun getCurrentFragment(): Fragment? {
         return supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.primaryNavigationFragment
     }
-
-    fun changeFragment(type: FragmentType) {
-        when (type) {
-            FragmentType.ORDER -> {  // 홈으로 이동
-                try {
-                    fragmentManager.beginTransaction().hide(getCurrentFragment()!!).commit()
-                    fragmentManager.beginTransaction().show(homeFragment).commit()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            else -> {}
-        }
-    }
-
-    fun onChangeFragment(view: View, type: FragmentType) {
-        view.setOnClickListener {
-            when (type) {
-                FragmentType.ORDER -> {  // 홈으로 이동
-                    try {
-                        fragmentManager.beginTransaction().hide(getCurrentFragment()!!).commit()
-                        fragmentManager.beginTransaction().show(homeFragment).commit()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-                FragmentType.HOME -> { // 오더로 이등
-                    try {
-                        fragmentManager.beginTransaction().hide(getCurrentFragment()!!).commit()
-                        fragmentManager.beginTransaction().show(orderFragment).commit()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-    }
-
-
 }

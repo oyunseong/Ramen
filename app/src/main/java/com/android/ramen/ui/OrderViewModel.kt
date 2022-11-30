@@ -21,10 +21,6 @@ class OrderViewModel : ViewModel() {
         private var orderNumberCounter = 0
     }
 
-    /**
-     * 1분이 지나면 갱신
-     * min값 1증가
-     * */
     private fun startTimer(orderNumber: Int) {
         val timer = Timer()
         var cnt = 0
@@ -73,9 +69,5 @@ class OrderViewModel : ViewModel() {
                 it
             }
         }
-    }
-
-    fun setOrderList(order: List<Order>) {
-        _orderList.value = order
     }
 }

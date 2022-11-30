@@ -25,11 +25,6 @@ class HomeFragment : Fragment() {
     private lateinit var powder: String
     private lateinit var etc: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("++FirstFragment", "++onCreate")
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -112,16 +107,5 @@ class HomeFragment : Fragment() {
         })
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("++FirstFragment", "++onDestroyView")
-        _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("++FirstFragment", "++onDestroy")
     }
 }

@@ -10,29 +10,22 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.android.ramen.databinding.FragmentHomeBinding
-import com.android.ramen.ui.OrderFragment
-import com.android.ramen.ui.OrderViewModel
 import com.android.ramen.ui.Ramen
+import com.android.ramen.utils.hideKeyboard
 
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     private lateinit var water: String
     private lateinit var powder: String
     private lateinit var etc: String
 
-    private val binding get() = _binding!!
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("++FirstFragment", "++onCreate")
-
     }
 
     override fun onCreateView(
@@ -46,13 +39,11 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonFirst.setOnClickListener {
-//            parentFragmentManager.beginTransaction()
-//                .replace(R.id.nav_host_fragment_content_main, orderFragment)
             findNavController().navigate(R.id.OrderFragment)
         }
 
         binding.orderButton.setOnClickListener {
-//            it.hideKeyboard()
+            it.hideKeyboard()
             if (orderOptionCheck()) {
                 showDialog()
             } else {
@@ -94,7 +85,6 @@ class HomeFragment : Fragment() {
         etc = binding.etc.text.toString()
         builder.setTitle("주문서 확인").setMessage("물의 양 : ${water}ml\n파우더 양 : ${powder}%\n추가 재료 : $etc")
 
-
         builder.setPositiveButton("주문하기", object : DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, p1: Int) {
                 try {
@@ -107,10 +97,7 @@ class HomeFragment : Fragment() {
                     val bundle = bundleOf(
                         "ramen" to ramen
                     )
-//                    MainActivity().changeFragment(FragmentType.HOME)
-//                    findNavController().navigate(
-//                        R.id.action_FirstFragment_to_OrderFragment, bundle
-//                    )
+                    findNavController().navigate(R.id.orderFragment, bundle)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(requireContext(), "알 수 없는 오류 발생.", Toast.LENGTH_SHORT).show()
@@ -124,12 +111,6 @@ class HomeFragment : Fragment() {
         })
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
-    }
-
-
-    // 라면 객체를 생성해서 list에 append하기
-    private fun order() {
-        val ramen: Ramen
     }
 
     override fun onDestroyView() {

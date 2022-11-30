@@ -13,10 +13,10 @@
         android:padding="12dp">
 
         <TextView
-            android:id="@+id/orderNumber"
+            android:id="@+id/orderTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="n번째 주문"
+            android:text="라면"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -24,18 +24,46 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/orderNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="주문번호 : 001"
+            android:textColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/orderTitle" />
+
+        <TextView
             android:id="@+id/waterInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="물: 500ml"
+            android:textColor="@color/black"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/orderNumber" />
 
         <TextView
+            android:id="@+id/powderInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="파우더 : 123"
+            android:textColor="@color/black"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/waterInfo" />
+
+        <TextView
+            android:id="@+id/etcInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="추가재료 : "
+            android:textColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/powderInfo"
+            app:layout_constraintTop_toBottomOf="@id/powderInfo" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

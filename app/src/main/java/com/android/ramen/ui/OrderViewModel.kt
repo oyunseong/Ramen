@@ -3,73 +3,79 @@ package com.android.ramen.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import java.util.Timer
-import java.util.TimerTask
+import com.android.ramen.R
+import com.android.ramen.SingleLiveEvent
+import java.util.*
 
 class OrderViewModel : ViewModel() {
-    private val _orderList = MutableLiveData<List<Ramen>>()
-    val orderList: LiveData<List<Ramen>> get() = _orderList
+    private val _orderList = MutableLiveData<List<Order>>()
+    val orderList: LiveData<List<Order>> get() = _orderList
 
-    private val _notionOrder = MutableLiveData<Int>()
-    val notionOrder: LiveData<Int> get() = _notionOrder
-
-    private val _finishOrder = MutableLiveData<Int>()
-    val finishOrder: LiveData<Int> get() = _finishOrder
+    private val _event = SingleLiveEvent<Pair<Int, Int>>()
+    val event: LiveData<Pair<Int, Int>> get() = _event
 
     companion object {
-        var orderNumber = 0
-        const val NOTION_TIME = 60
-        const val FINISH_ORDER_TIME = 120
+        /**
+         * 원래는 주문번호 생성을 위해 서버 혹은 로컬 데이터 베이스에서 저장하는 것이 적합하지만 간단한 테스트를 위해 전역변수로 선언
+         * */
+        private var orderNumberCounter = 0
     }
 
     /**
-     * @param i : 주문번호, orderNumber
+     * 1분이 지나면 갱신
+     * min값 1증가
      * */
-    private fun timer(i: Int) {
-        var timer: Timer = Timer()
-        var cnt: Int = 0
+    private fun startTimer(orderNumber: Int) {
+        val timer = Timer()
+        var cnt = 0
 
         val timerTask = object : TimerTask() {
             override fun run() {
-                if (cnt == NOTION_TIME) {
-                    _notionOrder.postValue(i)
-                }
-                if (cnt >= FINISH_ORDER_TIME) {
-                    timer.cancel()
-                    _finishOrder.postValue(i)
+                when (cnt) {
+                    0 -> {
+                        _event.postValue(Pair(orderNumber, cnt))
+                    }
+                    1 -> {
+                        _event.postValue(Pair(orderNumber, cnt))
+                    }
+                    2 -> {
+                        _event.postValue(Pair(orderNumber, cnt))
+                    }
+                    else -> {
+                        _event.postValue(Pair(orderNumber, cnt))
+                        timer.cancel()
+                    }
                 }
                 cnt++
             }
         }
-        timer.schedule(timerTask, 0, 1000)
+        timer.schedule(timerTask, 0, 5000)
     }
 
-    /**
-     * @param i : 주문번호, orderNumber
-     * */
-    fun popOrder(i: Int) {
-        try {
-            orderList.value?.forEachIndexed { index, it ->
-                if (it.orderNumber == i) {
-                    val list: MutableList<Ramen> = mutableListOf()
-                    list.addAll(orderList.value ?: emptyList())
-                    list.removeAt(index)
-                    _orderList.value = list
-                }
+    fun orderProduct(product: Product) {
+        orderNumberCounter++
+        val order = Order(
+            id = orderNumberCounter, product = product, image = R.drawable.beginning
+        )
+        _orderList.value = (orderList.value ?: emptyList()) + listOf(order)
+        startTimer(orderNumberCounter)
+    }
+
+    fun changeEvent(id: Int, image: Int, time: Int, ramenCookingState: RamenCookingState) {
+        _orderList.value = _orderList.value?.map {
+            if (it.id == id) {
+                val ramen = it.product as Ramen
+                it.copy(
+                    image = image,
+                    product = ramen.copy(ramenCookingState = ramenCookingState, cookingTime = time)
+                )
+            } else {
+                it
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
-
-    // 주문 버튼 클릭시 동작
-    fun setOrder(ramen: Ramen) {
-        orderNumber++
-        val list: MutableList<Ramen> = arrayListOf<Ramen>()
-        list.addAll(orderList.value ?: emptyList())
-        list.addAll(listOf(ramen.copy(orderNumber = orderNumber)))
-        _orderList.value = list
-        timer(orderNumber)
+    fun setOrderList(order: List<Order>) {
+        _orderList.value = order
     }
 }

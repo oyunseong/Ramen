@@ -1,15 +1,17 @@
 package com.android.ramen.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.ramen.R
 
-class OrderAdapter(private val onItemClickListener: (Ramen) -> Unit) :
+class OrderAdapter(private val onItemClickListener: (Order) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: List<Ramen> = emptyList()
+    private var items: List<Order> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return create(parent, onItemClickListener)
@@ -29,34 +31,31 @@ class OrderAdapter(private val onItemClickListener: (Ramen) -> Unit) :
 
     class RamenViewHolder(
         private val binding: View,
-        private val onItemClickListener: (Ramen) -> Unit
+        private val onItemClickListener: (Order) -> Unit
     ) :
         RecyclerView.ViewHolder(binding) {
         private val orderNumber: TextView = binding.findViewById(R.id.orderNumber)
-        private val water: TextView = binding.findViewById(R.id.waterInfo)
-        private val powder: TextView = binding.findViewById(R.id.powderInfo)
-        private val etc: TextView = binding.findViewById(R.id.etcInfo)
+        private val orderImage: ImageView = binding.findViewById(R.id.orderImage)
 
-        fun bind(item: Ramen) {
+        @SuppressLint("SetTextI18n")
+        fun bind(item: Order) {
             binding.rootView.setOnClickListener {
                 onItemClickListener.invoke(item)
             }
-            orderNumber.text = "주문번호 : ${item.orderNumber}"
-            water.text = "물의 양 : ${item.water}ml"
-            powder.text = "파우더 양 : ${item.powder}%"
-            etc.text = "추가 재료 : ${item.etc}"
+            orderNumber.text = "주문번호 : ${item.id}"
+            orderImage.setImageResource(item.image)
         }
     }
 
     companion object Factory {
-        fun create(parent: ViewGroup, onItemClickListener: (Ramen) -> Unit): RamenViewHolder {
+        fun create(parent: ViewGroup, onItemClickListener: (Order) -> Unit): RamenViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val view = layoutInflater.inflate(R.layout.item_ramen, parent, false)
             return RamenViewHolder(view, onItemClickListener)
         }
     }
 
-    fun setOrderList(item: List<Ramen>) {
+    fun setOrderList(item: List<Order>) {
         this.items = item
         notifyDataSetChanged()
     }

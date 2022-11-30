@@ -12,7 +12,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.ramen.databinding.FragmentHomeBinding
+import com.android.ramen.ui.OrderViewModel
 import com.android.ramen.ui.Ramen
+import com.android.ramen.ui.RamenCookingState
 import com.android.ramen.utils.hideKeyboard
 
 
@@ -37,7 +39,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.OrderFragment)
         }
@@ -89,10 +90,10 @@ class HomeFragment : Fragment() {
             override fun onClick(p0: DialogInterface?, p1: Int) {
                 try {
                     val ramen = Ramen(
-                        orderNumber = 0,
                         water = water.toInt(),
                         powder = powder.toInt(),
                         etc = etc,
+                        ramenCookingState = RamenCookingState.BEGINNING
                     )
                     val bundle = bundleOf(
                         "ramen" to ramen

@@ -3,26 +3,37 @@ package com.android.ramen.ui
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-interface Order {
-    val orderNumber: Int            // 주문 순서
-    val orderStartTime: Long        // 단위 : s, 초
+data class Order(
+    val id: Int,
+    val product: Product,
+    val image: Int
+)
+
+abstract class Product
+
+interface Boilable {
+    val cookingTime: Int
+    val ramenCookingState: RamenCookingState
 }
 
 @Parcelize
 data class Ramen(
-    override val orderNumber: Int,
-    override val orderStartTime: Long = System.currentTimeMillis(),
-    val water: Int,                                               // 단위 : ml, 밀리리터
-    val powder: Int,                                              // 단위 : %, 퍼센트
-    val etc: String                                               // 기타 재료
-) : Order, Parcelable {
+    val water: Int,
+    val powder: Int,
+    val etc: String,
+    override val ramenCookingState: RamenCookingState = RamenCookingState.BEGINNING,
+    override val cookingTime: Int = 0
+
+) : Product(), Boilable, Parcelable {
     companion object {
-        val mockRamen = Ramen(      // 임시 데이터
-            orderNumber = 0,
-            orderStartTime = System.currentTimeMillis(),
+        val mockRamen = Ramen(
             water = 0,
             powder = 0,
-            etc = ""
+            etc = "",
         )
     }
+}
+
+enum class RamenCookingState {
+    BEGINNING, MIDDLE, LAST, FINISH
 }
